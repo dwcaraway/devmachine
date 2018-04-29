@@ -1,0 +1,14 @@
+---
+- name: Download PhantomJS
+  get_url: "url=https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2 dest={{ temp_dir}}/phantomjs-2.1.1.tar.bz2"
+- name: Decompress PhantomJS
+  unarchive: "src={{ temp_dir }}/phantomjs-2.1.1.tar.bz2 dest=/usr/local/share"
+- name: Create PhantomJS executable link
+  file: src=/usr/local/share/phantomjs-2.1.1-linux-x86_64/bin/phantomjs dest=/usr/local/bin/phantomjs state=link
+- name: enable google yum repository
+  template: src=templates/google-chrome-repo.j2 dest=/etc/yum.repos.d/google-chrome.repo
+- name: install chrome and firefox browsers
+  yum: "name={{ item }} state=present"
+  with_items:
+    - google-chrome-stable
+    - firefox.x86_64

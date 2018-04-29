@@ -1,0 +1,3 @@
+*.retry
+ansible-elasticsearch
+ANXS.postgresql

@@ -1,0 +1,11 @@
+---
+- name: "Configure guest addition: clipboard"
+  shell: VBoxClient --clipboard
+- name: "Configure guest addition: drag & drop"
+  shell: VBoxClient --draganddrop
+- name: "Configure guest addition: resizable display"
+  shell: VBoxClient --display
+- name: "Configure guest addition: checkhostversion"
+  shell: VBoxClient --checkhostversion
+- name: "Configure guest addition: seamless"
+  shell: VBoxClient --seamless

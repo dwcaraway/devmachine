@@ -1,0 +1,12 @@
+---
+- name: install desktop
+  yum: "name={{ item }} state=present"
+  with_items:
+    - '@^GNOME Desktop'
+    - dkms
+    # - '@X Window System'
+    # - gnome-classic-session
+    # - gnome-terminal
+    # - nautilus-open-terminal
+    # - control-center
+    # - liberation-mono-fonts

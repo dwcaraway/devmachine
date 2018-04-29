@@ -1,0 +1,4 @@
+[submodule "dotfiles"]
+	path = dotfiles
+	url = https://stash.di2e.net/scm/~dave.caraway/dotfiles.git
+	branch = master

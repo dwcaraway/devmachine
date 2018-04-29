@@ -1,0 +1,9 @@
+---
+- name: install symlinks
+  yum: name=symlinks state=present
+- name: Copy configuration files
+  become_user: "{{ username }}"
+  command: "cp -r /vagrant/dotfiles {{ home_dir }}"
+- name: run configuration setup script
+  become_user: "{{ username }}"
+  shell: "sh setup.sh chdir={{ home_dir }}/dotfiles/"

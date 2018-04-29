@@ -1,0 +1,25 @@
+---
+- include: devtools.yml
+- name: check for vim installation
+  command: which vim
+  become_user: vagrant
+  register: vim_check
+  ignore_errors: True
+- name: check for tmux installation
+  command: which tmux
+  become_user: vagrant
+  register: tmux_check
+  ignore_errors: True
+- include: vim.yml
+  when: vim_check|failed
+- include: tmux.yml
+  when: tmux_check|failed
+- include: oh_my_zsh.yml
+- include: custom_config.yml
+- name: make zsh the current shell
+  shell: "{{ zsh_bin }}"
+- include: languages.yml
+- include: browsers.yml
+- include: desktop.yml
+- include: guestadditions.yml
+- include: powerline.yml

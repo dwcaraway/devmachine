@@ -1,0 +1,19 @@
+---
+- name: set tmux facts
+  set_fact: tmux_version=2.3
+- name: install tmux dependencies
+  yum: "name={{ item }} state=present" 
+  with_items:
+    - libevent-devel
+    - ncurses-devel
+    - glibc-static
+- name: download tmux release package
+  get_url: "url=https://github.com/tmux/tmux/releases/download/{{ tmux_version }}/tmux-{{ tmux_version }}.tar.gz dest={{ temp_dir }}/tmux-{{ tmux_version }}.tar.gz"
+- name: unpack the tmux release package
+  unarchive: "src={{ temp_dir }}/tmux-{{ tmux_version }}.tar.gz dest={{temp_dir}}"
+- name: configure tmux for installation
+  command: '"{{ item }}" chdir={{temp_dir}}/tmux-{{ tmux_version }}'
+  with_items:
+    - ./configure
+- name: Make and make install the install target
+  make: "chdir={{ temp_dir }}/tmux-{{ tmux_version }} target=install"

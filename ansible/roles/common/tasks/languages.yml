@@ -1,0 +1,43 @@
+---
+- name: install minimum necessary tools
+  yum: "name={{ item }} state=present"
+  with_items:
+    - https://centos7.iuscommunity.org/ius-release.rpm
+- name: install python, ruby, javascript and java
+  yum: "name={{ item }} update_cache=yes state=present"
+  with_items:
+    - ruby
+    - ruby-devel
+    - rubygems
+    - nodejs.x86_64
+    - npm.x86_64
+    - python-pip
+- name: get pyenv script
+  get_url:
+    url: https://raw.githubusercontent.com/yyuu/pyenv-installer/master/bin/pyenv-installer
+    dest: /tmp/install_pyenv.sh
+- name: install pyenv
+  become_user: "{{ username }}"
+  shell: "sh install_pyenv.sh chdir=/tmp"
+  args:
+    creates: "{{ home_dir }}/.pyenv"
+- name: configure zsh for pyenv
+  blockinfile:
+    backup: true
+    dest: "{{ home_dir }}/.zshrc"
+    marker: "# {mark} ANSIBLE MANAGED BLOCK - pyenv"
+    insertafter: "# BEGIN ANSIBLE MANAGED BLOCK - pyenv"
+    content: |
+        export PATH="{{ home_dir }}/.pyenv/bin:$PATH"
+        eval "$(pyenv init -)"
+        eval "$(pyenv virtualenv-init -)"
+- name: install python 3.6.0
+  shell: "pyenv install 3.6.0"
+  become_user: "{{ username }}"
+  args:
+    creates: "{{ home_dir }}/.pyenv/versions/3.6.0"
+- name: create virtual environment
+  become_user: "{{ username }}"
+  args:
+    creates: "{{ home_dir }}/.pyenv/versions/notebook"
+  shell: "pyenv virtualenv notebook"
