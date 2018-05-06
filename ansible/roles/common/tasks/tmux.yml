@@ -1,12 +1,19 @@
 ---
 - name: set tmux facts
-  set_fact: tmux_version=2.3
+  set_fact: tmux_version=2.7
+- name: check for tmux installation
+  command: which tmux
+  become_user: "{{ username }}"
+  register: tmux_check
+  ignore_errors: True
 - name: install tmux dependencies
-  yum: "name={{ item }} state=present" 
+  apt: "name={{ item }} state=present"
   with_items:
-    - libevent-devel
-    - ncurses-devel
-    - glibc-static
+    - automake
+    - pkg-config
+    - build-essential
+    - libevent-dev
+    - libncurses5-dev
 - name: download tmux release package
   get_url: "url=https://github.com/tmux/tmux/releases/download/{{ tmux_version }}/tmux-{{ tmux_version }}.tar.gz dest={{ temp_dir }}/tmux-{{ tmux_version }}.tar.gz"
 - name: unpack the tmux release package

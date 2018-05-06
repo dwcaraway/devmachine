@@ -4,17 +4,10 @@
 - name: install common required packages
   apt: "name={{ item }} state=present"
   with_items:
+    - software-properties-common
     - build-essential
     - unzip
     - libcurl4-gnutls-dev
     - libxml2
     - libxml2-dev
-    - zlib
-    - zlib-devel
-    - bzip2-devel
-    - readline-devel
-    - readline
-    - openssl-devel
     - openssl
-    - gitflow
-    - sqlite-devel

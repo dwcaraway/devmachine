@@ -1,21 +1,9 @@
 ---
 - include: devtools.yml
-- name: check for nvim installation
-  command: which nvim
-  become_user: vagrant
-  register: nvim_check
-  ignore_errors: True
-- name: check for tmux installation
-  command: which tmux
-  become_user: vagrant
-  register: tmux_check
-  ignore_errors: True
-- include: nvim.yml
-  when: nvim_check is failed
+- include: vim.yml
 - include: tmux.yml
-  when: tmux_check is failed
-# - include: oh_my_zsh.yml
-# - include: custom_config.yml
+- include: oh_my_zsh.yml
+- include: custom_config.yml
 # - name: make zsh the current shell
   # shell: "{{ zsh_bin }}"
 # - include: languages.yml

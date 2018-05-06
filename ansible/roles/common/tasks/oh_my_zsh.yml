@@ -1,17 +1,25 @@
 ---
+- name: check for zsh installation
+  command: which zsh
+  become_user: "{{ username }}"
+  register: zsh_check
+  ignore_errors: True
 - name: install oh-my-zsh dependencies
-  yum: name=zsh state=present
+  apt: name=zsh state=present
 - name: find user zsh path
   become_user: "{{ username }}"
   register: zsh_path
   shell: which zsh
 - name: add zsh to list of available shells
   lineinfile: "line={{ zsh_path.stdout }} dest=/etc/shells"
+  when: zsh_check is failed
 - name: make zsh the default shell
   shell: "chsh -s {{ zsh_path.stdout }} {{ username }}"
+  when: zsh_check is failed
 - name: download zsh extension
   become_user: "{{ username }}"
   get_url: "url=https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh dest={{ temp_dir }}/install_oh_my_zsh.sh"
 - name: install oh-my-zsh
   become_user: "{{ username}}"
   shell: "{{ zsh_bin }} install_oh_my_zsh.sh chdir={{ temp_dir }}"
+  when: zsh_check is failed
