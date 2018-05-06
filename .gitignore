@@ -2,3 +2,4 @@
 *~
 *.retry
 ansible/roles/geerlingguy*
+ansible/roles/angstwad*

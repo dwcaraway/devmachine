@@ -1,8 +1,8 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-VM_BOX = 'ubuntu/trusty64'.freeze
-VM_BOX_VERSION = '20180423.0.0'.freeze
+VM_BOX = 'bento/ubuntu-16.04'.freeze
+VM_BOX_VERSION = '201803.24.0'.freeze
 SCRIPT_DIR = File.dirname(__FILE__)
 REPO_DIR = File.expand_path(File.join(SCRIPT_DIR, '..'))
 MAPPED_REPO_DIR = File.join('/home', 'vagrant', 'repos')
