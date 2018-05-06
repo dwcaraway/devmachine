@@ -4,5 +4,5 @@
   become_method: sudo
   remote_user: root
   roles:
+    - angstwad.docker_ubuntu
     - common
-    - geerlingguy.docker

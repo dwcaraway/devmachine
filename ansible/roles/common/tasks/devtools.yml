@@ -1,12 +1,14 @@
 ---
 - name: update all installed packages
-  yum: name=* update_cache=yes state=present
+  apt: name=* update_cache=yes state=present
 - name: install common required packages
-  yum: "name={{ item }} state=present"
+  apt: "name={{ item }} state=present"
   with_items:
-    - git
+    - build-essential
     - unzip
-    - yum-utils
+    - libcurl4-gnutls-dev
+    - libxml2
+    - libxml2-dev
     - zlib
     - zlib-devel
     - bzip2-devel
@@ -15,9 +17,4 @@
     - openssl-devel
     - openssl
     - gitflow
-    - qt5-qtbase
     - sqlite-devel
-- name: install development tools
-  yum: "name={{ item }} state=present"
-  with_items:
-    - '@Development Tools'

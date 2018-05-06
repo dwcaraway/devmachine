@@ -2,4 +2,4 @@
 # Examples for postgres and elasticsearch
 #- src: ANXS.postgresql
 #- src: https://github.com/elastic/ansible-elasticsearch.git
-- src: geerlingguy.docker
+- src: angstwad.docker_ubuntu
