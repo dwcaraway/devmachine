@@ -1,0 +1,44 @@
+---
+- name: check for vim installation
+  command: vim --version | head -1 | cut -d ' ' -f 5
+  become_user: "{{ username }}"
+  register: vim_version
+  ignore_errors: True
+- name: install vim
+  when: vim_version is failed or vim_version|float < 8
+  block:
+  - name: uninstall existing vim
+    apt: "name={{ item }} state=absent"
+    with_items:
+      - vim
+      - vim-tiny
+  - name: install vim dependencies
+    apt: "name={{ item }} state=present"
+    with_items:
+      - libncurses5-dev
+      - libgnome2-dev
+      - libgnomeui-dev
+      - libgtk2.0-dev
+      - libatk1.0-dev
+      - libbonoboui2-dev
+      - libcairo2-dev
+      - libx11-dev
+      - libxpm-dev
+      - libxt-dev
+      - python-dev
+      - python3-dev
+      - ruby-dev
+      - lua5.1
+      - libperl-dev
+  - name: download vim source code
+    get_url:
+      url: "https://github.com/vim/vim/archive/master.zip"
+      dest: "{{ temp_dir }}/master.zip"
+  - name: Unpackage vim source code
+    unarchive: "src={{ temp_dir }}/master.zip dest={{temp_dir}}"
+  - name: configure vim for installation
+    command: '"{{ item }}" chdir={{temp_dir}}/vim-master'
+    with_items:
+      - ./configure
+  - name: Make and make install the vim target
+    make: "chdir={{ temp_dir }}/vim-master target=install"

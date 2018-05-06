@@ -11,3 +11,8 @@
     - libxml2
     - libxml2-dev
     - openssl
+    - tmux
+    - git
+    - bzip2
+    - sqlite3
+    - tree

@@ -1,25 +1,33 @@
 ---
-- name: check for zsh installation
-  command: which zsh
-  become_user: "{{ username }}"
-  register: zsh_check
+- name: check oh-my-zsh installed for user
+  register: omz_check
+  command: find ~/.oh-my-zsh -type d
   ignore_errors: True
+  become_user: "{{ username }}"
 - name: install oh-my-zsh dependencies
-  apt: name=zsh state=present
-- name: find user zsh path
-  become_user: "{{ username }}"
-  register: zsh_path
-  shell: which zsh
-- name: add zsh to list of available shells
-  lineinfile: "line={{ zsh_path.stdout }} dest=/etc/shells"
-  when: zsh_check is failed
-- name: make zsh the default shell
-  shell: "chsh -s {{ zsh_path.stdout }} {{ username }}"
-  when: zsh_check is failed
-- name: download zsh extension
-  become_user: "{{ username }}"
-  get_url: "url=https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh dest={{ temp_dir }}/install_oh_my_zsh.sh"
+  apt: "name={{ item }} state=present"
+  with_items:
+    - zsh
+    - zsh-antigen
 - name: install oh-my-zsh
-  become_user: "{{ username}}"
-  shell: "{{ zsh_bin }} install_oh_my_zsh.sh chdir={{ temp_dir }}"
-  when: zsh_check is failed
+  when: omz_check is failed
+  block:
+  - name: find user zsh path
+    become_user: "{{ username }}"
+    register: zsh_path
+    shell: which zsh
+  - name: add zsh to list of available shells
+    lineinfile: "line={{ zsh_path.stdout }} dest=/etc/shells"
+  - name: make zsh the user's default login shell
+    shell: "chsh -s {{ zsh_path.stdout }} {{ username }}"
+  - name: download zsh extension
+    become_user: "{{ username }}"
+    get_url:
+      # Revert URL once Bug 6796 fixed in Oh-My-Zsh
+      # SEE https://github.com/robbyrussell/oh-my-zsh/issues/6796
+      # url: "https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh"
+      url: "https://raw.githubusercontent.com/mriedmann/oh-my-zsh/master/tools/install.sh"
+      dest: "{{ temp_dir }}/install_oh_my_zsh.sh"
+  - name: run the oh-my-zsh installation script
+    become_user: "{{ username}}"
+    shell: "{{ zsh_bin }} install_oh_my_zsh.sh chdir={{ temp_dir }}"
