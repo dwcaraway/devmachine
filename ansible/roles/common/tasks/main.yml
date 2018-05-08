@@ -1,10 +1,10 @@
 ---
-# - include: devtools.yml
-# - include: custom_config.yml
+- include: devtools.yml
+- include: custom_config.yml
 - include: vim.yml
-# - include: oh_my_zsh.yml
-# - include: languages.yml
-# - include: powerline.yml
-# - name: Update all packages to the latest
-  # apt:
-    # upgrade: dist
+- include: oh_my_zsh.yml
+- include: languages.yml
+- include: powerline.yml
+- name: Update all packages to the latest
+  apt:
+    upgrade: dist

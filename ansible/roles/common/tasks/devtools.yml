@@ -16,3 +16,4 @@
     - bzip2
     - sqlite3
     - tree
+    - xclip

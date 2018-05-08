@@ -23,10 +23,7 @@
   - name: download zsh extension
     become_user: "{{ username }}"
     get_url:
-      # Revert URL once Bug 6796 fixed in Oh-My-Zsh
-      # SEE https://github.com/robbyrussell/oh-my-zsh/issues/6796
-      # url: "https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh"
-      url: "https://raw.githubusercontent.com/mriedmann/oh-my-zsh/master/tools/install.sh"
+      url: "https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh"
       dest: "{{ temp_dir }}/install_oh_my_zsh.sh"
   - name: run the oh-my-zsh installation script
     become_user: "{{ username}}"
