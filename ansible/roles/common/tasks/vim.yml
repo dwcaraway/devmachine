@@ -4,15 +4,15 @@
   become_user: "{{ username }}"
   register: vim_version
   ignore_errors: True
-- name: install vim
+- name: install vim for Ubuntu
   when: vim_version is failed or vim_version|float < 8
   block:
   - name: uninstall existing vim
-    apt: "name={{ item }} state=absent"
+    package: "name={{ item }} state=absent"
     with_items:
       - vim
       - vim-tiny
-  - name: install vim dependencies
+  - name: install vim dependencies (ubuntu / debian)
     apt: "name={{ item }} state=present"
     with_items:
       - libncurses5-dev
@@ -30,6 +30,12 @@
       - ruby-dev
       - lua5.1
       - libperl-dev
+    when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+  - name: install vim dependencies (CentOS / RHEL)
+    yum: "name={{ item }} state=present"
+    with_items:
+      - ncurses-devel
+    when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
   - name: download vim source code
     get_url:
       url: "https://github.com/vim/vim/archive/master.zip"

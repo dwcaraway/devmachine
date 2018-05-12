@@ -1,11 +1,31 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-VM_BOX = 'bento/ubuntu-16.04'.freeze
+# Use Ubuntu instead of CentOS
+# VM_BOX = 'bento/ubuntu-16.04'.freeze
+VM_BOX = 'bento/centos-7.4'.freeze
 VM_BOX_VERSION = '201803.24.0'.freeze
+VRAM_MB = '128'
+
 SCRIPT_DIR = File.dirname(__FILE__)
 REPO_DIR = File.expand_path(File.join(SCRIPT_DIR, '..'))
 MAPPED_REPO_DIR = File.join('/home', 'vagrant', 'repos')
+
+# Check required plugins
+REQUIRED_PLUGINS = %w(vagrant-vbguest).freeze
+
+def provisioning?
+  ARGV[0].downcase == "provision"
+end
+
+REQUIRED_PLUGINS.each do |plugin|
+  raise "Missing required plugin. Install the latest plugin version with\n\nvagrant plugin install #{plugin}" unless Vagrant.has_plugin?(plugin) or not provisioning?
+end
+
+# Check to see if the git submodule was checked out
+unless File.exists?(File.join(SCRIPT_DIR, "dotfiles"))
+  raise "Missing required submodule. Download submodules with\n\ngit submodule update --init"
+end
 
 Vagrant.configure('2') do |config|
   # The most common configuration options are documented and commented below.
@@ -49,11 +69,17 @@ Vagrant.configure('2') do |config|
   # Example for VirtualBox:
   #
   config.vm.provider 'virtualbox' do |vb|
-    # Customize the amount of memory on the VM:
+    # Customize the amount of memory on the VM in megabytes
     vb.memory = '4096'
 
-    # Add multi-cpu support
+    # Number of virtual CPUs to use
     vb.cpus = 2
+
+    # Display the VirtualBox GUI when booting the machine
+    vb.gui = true
+
+    # Add video memory (size in megabytes)
+    vb.customize ['modifyvm', :id, '--vram', VRAM_MB]
   end
 
   # Ansible galaxy roles requires Git, preload prior to running the playbook
@@ -62,7 +88,6 @@ Vagrant.configure('2') do |config|
   # Provision with ansible_local
   config.vm.provision('ansible_local') do |ansible_local|
     ansible_local.install_mode = :pip
-    # ansible_local.extra_vars = { ansible_python_interpreter: '/usr/bin/python3.6' }
     ansible_local.playbook = 'ansible/playbook.yml'
     ansible_local.inventory_path = 'ansible/hosts'
     ansible_local.galaxy_role_file = 'ansible/required_roles.yml'

@@ -4,17 +4,27 @@
     pyenv_root: "{{ home_dir }}/.pyenv"
     nvm_root: "{{ home_dir }}/.nvm"
     nvm_version: 0.33.11
+
+- name: install minimum necessary tools (centos)
+  yum: "name={{ item }} state=present"
+  with_items:
+    - https://centos7.iuscommunity.org/ius-release.rpm
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+
 - name: install ruby and javascript
   apt: "name={{ item }} update_cache=yes state=present"
   with_items:
     - ruby-full
     - nodejs
     - npm
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
 - name: check if pyenv installed
   command: command -v pyenv
   register: pyenv_check
   ignore_errors: True
   become_user: "{{ username }}"
+
 - name: install pyenv
   become_user: "{{ username }}"
   when: pyenv_check is failed
@@ -37,11 +47,13 @@
           export PATH="{{ home_dir }}/.pyenv/bin:$PATH"
           eval "$(pyenv init -)"
           eval "$(pyenv virtualenv-init -)"
+
 - name: check if nvm installed
   command: command -v nvm
   register: nvm_check
   ignore_errors: True
   become_user: "{{ username }}"
+
 - name: install nvm
   become_user: "{{ username }}"
   when: nvm_check is failed
@@ -54,6 +66,7 @@
     shell: "{{ zsh_bin }} install_nvm.sh chdir=/tmp"
     args:
       creates: "{{ nvm_root }}"
+
   - name: configure zsh for nvm
     blockinfile:
       backup: true

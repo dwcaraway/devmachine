@@ -1,6 +1,6 @@
 ---
 - name: install symlinks
-  apt: name=symlinks state=present
+  package: name=symlinks state=present
 - name: Copy configuration files
   become_user: "{{ username }}"
   command: "cp -r /vagrant/dotfiles {{ home_dir }}"

@@ -1,6 +1,6 @@
 ---
 - name: update all installed packages
-  apt: name=* update_cache=yes state=present
+  package: name=* update_cache=yes state=present
 - name: install common required packages
   apt: "name={{ item }} state=present"
   with_items:
@@ -17,3 +17,29 @@
     - sqlite3
     - tree
     - xclip
+    # - jq
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+- name: install development packages required by common RedHat / Centos packages
+  yum: "name={{ item }} state=present"
+  with_items:
+    - '@Development Tools'
+    - epel-release
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+- name: install common required packages
+  yum: "name={{ item }} state=present"
+  with_items:
+    - tree
+    - jq
+    - xclip
+    - unzip
+    - yum-utils
+    - zlib
+    - zlib-devel
+    - bzip2-devel
+    - readline-devel
+    - readline
+    - openssl-devel
+    - openssl
+    - sqlite-devel
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'

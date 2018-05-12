@@ -5,10 +5,9 @@
   ignore_errors: True
   become_user: "{{ username }}"
 - name: install oh-my-zsh dependencies
-  apt: "name={{ item }} state=present"
+  package: "name={{ item }} state=present"
   with_items:
     - zsh
-    - zsh-antigen
 - name: install oh-my-zsh
   when: omz_check is failed
   block:

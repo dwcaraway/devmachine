@@ -5,6 +5,15 @@
 - include: oh_my_zsh.yml
 - include: languages.yml
 - include: powerline.yml
-- name: Update all packages to the latest
+- include: desktop.yml
+- include: guestadditions.yml
+
+- name: Add vagrant user to docker group
+  user:
+    name: vagrant
+    groups: docker
+
+- name: Update all packages (Ubuntu)
   apt:
     upgrade: dist
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
