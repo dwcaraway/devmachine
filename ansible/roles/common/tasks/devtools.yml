@@ -42,4 +42,9 @@
     - openssl-devel
     - openssl
     - sqlite-devel
+    - epel-release
+    - ack
+    - tmux
+    - lsb-core-noarch
+    - libXScrnSaver
   when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'

@@ -1,18 +1,18 @@
 ---
 - name: check for vim installation
-  command: vim --version | head -1 | cut -d ' ' -f 5
+  shell: "vim --version | head -1 | cut -d ' ' -f 5 | cut -d '.' -f 1"
   become_user: "{{ username }}"
   register: vim_version
   ignore_errors: True
-- name: install vim for Ubuntu
-  when: vim_version is failed or vim_version|float < 8
+- name: install vim
+  when: vim_version is failed or vim_version.stdout|int < 8
   block:
   - name: uninstall existing vim
     package: "name={{ item }} state=absent"
     with_items:
       - vim
       - vim-tiny
-  - name: install vim dependencies (ubuntu / debian)
+  - name: install vim dependencies (Ubuntu / Debian)
     apt: "name={{ item }} state=present"
     with_items:
       - libncurses5-dev

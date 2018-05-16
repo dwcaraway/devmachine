@@ -6,6 +6,7 @@
 - include: languages.yml
 - include: powerline.yml
 - include: desktop.yml
+- include: browsers.yml
 - include: guestadditions.yml
 
 - name: Add vagrant user to docker group
