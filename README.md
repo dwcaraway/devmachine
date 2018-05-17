@@ -15,14 +15,14 @@ Ensure that all submodules and their submodules are checked out using the ```--r
 
 ```bash
 
-git clone --recursive https://dave.caraway@stash.di2e.net/scm/~dave.caraway/devmachine.git
+git clone --recursive git@github.com:dwcaraway/devmachine.git
 ```
 
 Alternatively, if you've already cloned the repository, you can always checkout the submodules via:
 
 
 ```bash
-git submodule update --init --recursive
+git submodule update --init
 ```
 
 ## Synced Folders
@@ -115,4 +115,11 @@ If you're done with a virtual machine, you may destroy it. All synced files will
 
 ```bash
 vagrant destroy
+```
+
+## Exporting
+You may export the virtual machine to an image usable in virtualbox on other machines using the `vagrant package` command:
+
+```bash
+vagrant package
 ```
