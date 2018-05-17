@@ -39,10 +39,10 @@
       creates: "{{ pyenv_root }}"
   - name: configure zsh for pyenv
     blockinfile:
-      backup: true
+      backup: false
       dest: "{{ home_dir }}/.zshrc"
       marker: "# {mark} ANSIBLE MANAGED BLOCK - pyenv"
-      insertafter: "# BEGIN ANSIBLE MANAGED BLOCK - pyenv"
+      insertafter: "EOF"
       content: |
           export PATH="{{ home_dir }}/.pyenv/bin:$PATH"
           eval "$(pyenv init -)"
@@ -69,10 +69,11 @@
 
   - name: configure zsh for nvm
     blockinfile:
-      backup: true
+      backup: false
       dest: "{{ home_dir }}/.zshrc"
       marker: "# {mark} ANSIBLE MANAGED BLOCK - nvm"
-      insertafter: "# BEGIN ANSIBLE MANAGED BLOCK - nvm"
+      insertafter: "EOF"
       content: |
           export NVM_DIR="{{ nvm_root }}"
           [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+          [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
