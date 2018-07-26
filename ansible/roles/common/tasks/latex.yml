@@ -2,6 +2,7 @@
 - name: install LaTex files (for building PDFs)
   yum: "name={{ item }} state=present"
   with_items:
+    - pandoc
     - texlive
     - texlive-latex
     - texlive-xetex

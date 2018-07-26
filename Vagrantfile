@@ -48,6 +48,17 @@ Vagrant.configure('2') do |config|
 
   # Forward default jupyter dev server port
   config.vm.network 'forwarded_port', guest: 8888, host: 8888
+  # Forward default ember port
+  config.vm.network 'forwarded_port', guest: 4200, host: 4200
+  # Forward default ember livereload port
+  config.vm.network 'forwarded_port', guest: 49152, host: 49152
+
+  # Forward default metra docker compose port
+  config.vm.network 'forwarded_port', guest: 8081, host: 8081
+
+  # Forward for django and front end
+  config.vm.network 'forwarded_port', guest: 3000, host: 3000
+  config.vm.network 'forwarded_port', guest: 8000, host: 8000
 
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
@@ -76,7 +87,7 @@ Vagrant.configure('2') do |config|
     vb.cpus = 2
 
     # Display the VirtualBox GUI when booting the machine
-    vb.gui = true
+    vb.gui = false
 
     # Add video memory (size in megabytes)
     vb.customize ['modifyvm', :id, '--vram', VRAM_MB]
