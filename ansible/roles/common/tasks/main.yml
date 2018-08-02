@@ -4,6 +4,7 @@
 - include: vim.yml
 - include: oh_my_zsh.yml
 - include: languages.yml
+- include: tmux.yml
 - include: powerline.yml
 - include: desktop.yml
 - include: browsers.yml

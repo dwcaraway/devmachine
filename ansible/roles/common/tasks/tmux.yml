@@ -1,0 +1,39 @@
+---
+- set_fact: tmux_dir="{{ temp_dir }}/tmux-2.3"
+- name: check for tmux installation
+  shell: "tmux -V | cut -d ' ' -f 2 | cut -d '.' -f 1"
+  become_user: "{{ username }}"
+  register: tmux_version
+  ignore_errors: True
+- name: install tmux
+  when: tmux_version is failed or tmux_version.stdout|int < 2
+  block:
+    - name: install tmux dependencies (CentOS / RHEL)
+      yum: "name={{ item }} state=present"
+      with_items:
+        - gcc
+        - kernel-devel
+        - make
+        - ncurses-devel
+        - libevent-devel
+      when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+    - name: Download and unpack tmux
+      unarchive:
+        src: "https://github.com/tmux/tmux/releases/download/2.3/tmux-2.3.tar.gz"
+        dest: "{{ temp_dir }}"
+        remote_src: yes
+        creates: "{{ tmux_dir }}"
+    - name: configure tmux for installation
+      command: '"{{ item }}" chdir={{ tmux_dir }}'
+      with_items:
+        # - 'LDFLAGS="-L/usr/local/lib -Wl,-rpath=/usr/local/lib" ./configure --prefix=/usr/local'
+        - ./configure
+    - name: make tmux installation
+      command: '"{{ item }}" chdir={{ tmux_dir }}'
+      with_items:
+        - make
+    - name: uninstall existing tmux
+      yum: "name=tmux state=absent"
+      when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+    - name: Run make install for tmux
+      make: "chdir={{ tmux_dir }} target=install"
