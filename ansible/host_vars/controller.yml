@@ -6,3 +6,7 @@ username: vagrant
 home_dir: /home/vagrant
 zsh_bin: /usr/bin/zsh
 project_name: davedevenv
+
+#ansible git settings
+git_install_from_source: true
+git_version: "2.18.0"

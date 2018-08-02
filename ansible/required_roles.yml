@@ -4,3 +4,4 @@
 #- src: https://github.com/elastic/ansible-elasticsearch.git
 # - src: angstwad.docker_ubuntu
 - src: geerlingguy.docker
+- src: geerlingguy.git
