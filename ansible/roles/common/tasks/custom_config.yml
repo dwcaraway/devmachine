@@ -1,9 +1,13 @@
 ---
+- set_fact: dot_src_dir="/vagrant/dotfiles"
+- set_fact: dot_dir="{{ home_dir }}/dotfiles"
 - name: install symlinks
   package: name=symlinks state=present
-- name: Copy configuration files
-  become_user: "{{ username }}"
-  command: "cp -r /vagrant/dotfiles {{ home_dir }}"
+- name: link dotfiles to home directory
+  file:
+    src: "{{ dot_src_dir }}"
+    dest: "{{ dot_dir }}"
+    state: link
 - name: run configuration setup script
   become_user: "{{ username }}"
-  shell: "sh setup.sh chdir={{ home_dir }}/dotfiles/"
+  shell: "sh setup.sh chdir={{ dot_dir }}"
