@@ -1,4 +1,5 @@
 ---
+- set_fact: vim_dir="{{ temp_dir }}/vim-master"
 - name: check for vim installation
   shell: "vim --version | head -1 | cut -d ' ' -f 5 | cut -d '.' -f 1"
   become_user: "{{ username }}"
@@ -35,16 +36,28 @@
     yum: "name={{ item }} state=present"
     with_items:
       - ncurses-devel
+      - python36
+      - python36-devel
+      - libX11-devel
     when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
-  - name: download vim source code
-    get_url:
-      url: "https://github.com/vim/vim/archive/master.zip"
-      dest: "{{ temp_dir }}/master.zip"
   - name: Unpackage vim source code
-    unarchive: "src={{ temp_dir }}/master.zip dest={{temp_dir}}"
+    unarchive:
+      src: "https://github.com/vim/vim/archive/master.zip"
+      dest: "{{ temp_dir }}"
+      remote_src: true
+      creates: "{{ vim_dir }}"
   - name: configure vim for installation
-    command: '"{{ item }}" chdir={{temp_dir}}/vim-master'
-    with_items:
-      - ./configure
+    shell: >
+      ./configure
+      --enable-multibyte
+      --enable-pythoninterp=dynamic
+      --with-python-config-dir=/usr/lib64/python2.7/config/
+      --with-features=huge
+      --enable-fontset
+      --enable-largefile
+      --with-compiledby="vagrant"
+      --enable-fail-if-missing
+    args:
+      chdir: "{{ vim_dir }}"
   - name: Make and make install the vim target
-    make: "chdir={{ temp_dir }}/vim-master target=install"
+    make: "chdir={{ vim_dir }} target=install"
