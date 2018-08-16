@@ -10,3 +10,8 @@ project_name: davedevenv
 #ansible git settings
 git_install_from_source: true
 git_version: "2.18.0"
+
+#docker settings
+docker_package: "docker-{{ docker_edition }}-18.06.0.ce-3.el7"
+docker_compose_version: "1.22.0"
+
