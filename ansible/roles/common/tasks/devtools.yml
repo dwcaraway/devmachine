@@ -17,6 +17,7 @@
     - xclip
     - jq
     - cairo-devel
+    - graphviz
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
 
 - name: install development packages required by common RedHat / Centos packages
