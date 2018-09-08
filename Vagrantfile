@@ -7,6 +7,15 @@ VM_BOX = 'bento/centos-7.4'.freeze
 VM_BOX_VERSION = '201803.24.0'.freeze
 VRAM_MB = '128'
 
+FORWARDED_PORTS = [1337, # strapi
+                   8888, # jupyter dev server port
+                   4200, # default ember port
+                   49152, # ember livereload port
+                   8081, # metra docker compose port
+                   3000, # Django
+                   8000] # Front end / gatsby
+HOST_IP = '127.0.0.1'
+
 SCRIPT_DIR = File.dirname(__FILE__)
 REPO_DIR = File.expand_path(File.join(SCRIPT_DIR, '..'))
 MAPPED_REPO_DIR = File.join('/home', 'vagrant', 'repos')
@@ -46,22 +55,9 @@ Vagrant.configure('2') do |config|
   # within the machine from a port on the host machine. In the example below,
   # accessing "localhost:8080" will access port 80 on the guest machine.
 
-  # Forward default strapi port
-  config.vm.network 'forwarded_port', guest: 1337, host: 1337
-
-  # Forward default jupyter dev server port
-  config.vm.network 'forwarded_port', guest: 8888, host: 8888
-  # Forward default ember port
-  config.vm.network 'forwarded_port', guest: 4200, host: 4200
-  # Forward default ember livereload port
-  config.vm.network 'forwarded_port', guest: 49152, host: 49152
-
-  # Forward default metra docker compose port
-  config.vm.network 'forwarded_port', guest: 8081, host: 8081
-
-  # Forward for django and front end
-  config.vm.network 'forwarded_port', guest: 3000, host: 3000
-  config.vm.network 'forwarded_port', guest: 8000, host: 8000
+  FORWARDED_PORTS.each do |port|
+    config.vm.network 'forwarded_port', guest: port, host: port, host_ip: HOST_IP
+  end
 
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
