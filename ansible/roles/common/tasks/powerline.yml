@@ -1,8 +1,16 @@
 ---
 - set_fact: powerline_fonts_dir="{{ temp_dir }}/powerline-fonts"
+- name: check for powerline fonts
+  register: powerline_fonts
+  command: "find {{ powerline_fonts_dir }} -type d"
+  ignore_errors: True
+  become_user: "{{ username }}"
 - name: install powerline for vim and tmux
   shell: pip install powerline-status
-- name: clone and/or update powerline fonts
-  git: "repo=https://github.com/powerline/fonts.git dest={{ powerline_fonts_dir }} clone=yes update=yes force=yes"
 - name: install powerline fonts
-  shell: "zsh install.sh chdir={{ powerline_fonts_dir }}"
+  when: powerline_fonts is failed
+  block:
+    - name: clone and/or update powerline fonts
+      git: "repo=https://github.com/powerline/fonts.git dest={{ powerline_fonts_dir }} clone=yes update=yes force=yes"
+    - name: install powerline fonts
+      shell: "zsh install.sh chdir={{ powerline_fonts_dir }}"

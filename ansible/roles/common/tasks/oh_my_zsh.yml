@@ -1,7 +1,9 @@
 ---
+- set_fact: zsh_plugin_dir="~/.oh-my-zsh/custom/plugins"
+- set_fact: zsh_autosuggestion_dir="{{ zsh_plugin_dir }}/zsh-autosuggestions"
 - name: check oh-my-zsh installed for user
   register: omz_check
-  command: find ~/.oh-my-zsh -type d
+  command: "find {{ zsh_plugin_dir }}-type d"
   ignore_errors: True
   become_user: "{{ username }}"
 - name: install oh-my-zsh dependencies
@@ -27,3 +29,13 @@
   - name: run the oh-my-zsh installation script
     become_user: "{{ username}}"
     shell: "{{ zsh_bin }} install_oh_my_zsh.sh chdir={{ temp_dir }}"
+- name: check for oh-my-zsh autosuggestion download
+  register: zsh_autosuggestion
+  command: "find {{ zsh_autosuggestion_dir }} -type d"
+  ignore_errors: True
+  become_user: "{{ username }}"
+- name: download zsh-autosuggestion plugin
+  when: zsh_autosuggestion is failed
+  git: "repo=https://github.com/zsh-users/zsh-autosuggestions.git dest={{ zsh_autosuggestion_dir }} clone=yes update=yes"
+  become_user: "{{ username }}"
+
