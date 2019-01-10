@@ -90,6 +90,9 @@ Vagrant.configure('2') do |config|
 
     # Add video memory (size in megabytes)
     vb.customize ['modifyvm', :id, '--vram', VRAM_MB]
+
+    # Allow copy and paste experience for VirtualBox VMS
+    vb.customize ['modifyvm', :id, '--clipboard', 'bidirectional']
   end
 
   # Ansible galaxy roles requires Git, preload prior to running the playbook
