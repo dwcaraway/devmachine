@@ -1,6 +1,7 @@
 ---
 - set_fact: dot_src_dir="/vagrant/dotfiles"
 - set_fact: dot_dir="{{ home_dir }}/dotfiles"
+- set_fact: auth_script="{{ home_dir }}/repos/auth/install.sh"
 - name: install symlinks
   package: name=symlinks state=present
 - name: link dotfiles to home directory
@@ -16,5 +17,12 @@
     name: vm.max_map_count
     value: "{{ vm_max_map_count }}"
     sysctl_set: yes
-
-
+- name: check if certificates available
+  become_user: "{{ username }}"
+  stat:
+    path: "{{ auth_script }}"
+  register: auth_script_file
+- name: install and configure certificates
+  become_user: "{{ username }}"
+  shell: "{{ auth_script }}"
+  when: auth_script_file.stat.exists == True
