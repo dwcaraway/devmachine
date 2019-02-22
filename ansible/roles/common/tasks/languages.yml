@@ -3,6 +3,7 @@
   set_fact:
     pyenv_root: "{{ home_dir }}/.pyenv"
     nvm_root: "{{ home_dir }}/.nvm"
+    nvm_script: "{{ home_dir }}/.nvm/nvm.sh"
     nvm_version: 0.33.11
     python_version: 3.7.2
 
@@ -53,13 +54,17 @@
           eval "$(pyenv init -)"
           eval "$(pyenv virtualenv-init -)"
 
-- name: install global pyenv version
-  shell: pyenv install -s {{ python_version }}
+- name: configure pyenv
   become_user: "{{ username }}"
+  block:
+  - name: install global pyenv version
+    shell: pyenv install -s {{ python_version }}
 
-- name: configure global pyenv version
-  shell: pyenv global {{ python_version }}
-  become_user: "{{ username }}"
+  - name: configure global pyenv version
+    shell: pyenv global {{ python_version }}
+
+  - name: install python support tools globally
+    shell: pip install pipenv flake8 autopep8
 
 - name: check if nvm installed
   command: command -v nvm
@@ -88,5 +93,27 @@
       insertafter: "EOF"
       content: |
           export NVM_DIR="{{ nvm_root }}"
-          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+          [ -s "{{ nvm_script }}" ] && \. "{{ nvm_script }}"
           [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+- name: configure global nodejs tools
+  become: yes
+  become_user: "{{ username }}"
+  block:
+  - name: load nvm settings for zsh
+    shell: |
+      source "{{ home_dir}}/.zshrc"
+      nvm install node
+    args:
+      executable: /bin/zsh
+    ignore_errors: yes
+  - name: load nvm settings for zsh
+    shell: |
+      source "{{ home_dir}}/.zshrc"
+      nvm alias default node
+    args:
+      executable: /bin/zsh
+  - name: install nodejs required libraries
+    shell: npm install -g prettier eslint
+    args:
+      executable: /bin/zsh
