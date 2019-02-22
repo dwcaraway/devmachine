@@ -4,6 +4,7 @@
     pyenv_root: "{{ home_dir }}/.pyenv"
     nvm_root: "{{ home_dir }}/.nvm"
     nvm_version: 0.33.11
+    python_version: 3.7.2
 
 - name: install minimum necessary tools (centos)
   yum:
@@ -52,6 +53,14 @@
           eval "$(pyenv init -)"
           eval "$(pyenv virtualenv-init -)"
 
+- name: install global pyenv version
+  shell: pyenv install -s {{ python_version }}
+  become_user: "{{ username }}"
+
+- name: configure global pyenv version
+  shell: pyenv global {{ python_version }}
+  become_user: "{{ username }}"
+
 - name: check if nvm installed
   command: command -v nvm
   register: nvm_check
@@ -62,7 +71,7 @@
   become_user: "{{ username }}"
   when: nvm_check is failed
   block:
-  - name: get pyenv automatic installer script
+  - name: get nvm automatic installer script
     get_url:
       url: "https://raw.githubusercontent.com/creationix/nvm/v{{nvm_version}}/install.sh"
       dest: /tmp/install_nvm.sh

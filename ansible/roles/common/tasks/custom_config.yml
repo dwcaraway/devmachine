@@ -1,7 +1,8 @@
 ---
-- set_fact: dot_src_dir="/vagrant/dotfiles"
-- set_fact: dot_dir="{{ home_dir }}/dotfiles"
-- set_fact: auth_script="{{ home_dir }}/repos/auth/install.sh"
+- set_fact:
+    dot_src_dir: "/vagrant/dotfiles"
+    dot_dir: "{{ home_dir }}/dotfiles"
+    auth_script: "{{ home_dir }}/repos/auth/install.sh"
 - name: install symlinks
   package: name=symlinks state=present
 - name: link dotfiles to home directory
