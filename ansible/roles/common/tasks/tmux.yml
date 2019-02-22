@@ -9,13 +9,14 @@
   when: tmux_version is failed or tmux_version.stdout|int < 2
   block:
     - name: install tmux dependencies (CentOS / RHEL)
-      yum: "name={{ item }} state=present"
-      with_items:
-        - gcc
-        - kernel-devel
-        - make
-        - ncurses-devel
-        - libevent-devel
+      yum:
+        name:
+          - gcc
+          - kernel-devel
+          - make
+          - ncurses-devel
+          - libevent-devel
+        state: present
       when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
     - name: Download and unpack tmux
       unarchive:

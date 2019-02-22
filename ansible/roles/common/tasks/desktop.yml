@@ -1,12 +1,11 @@
 - name: install Gnome desktop (CentOS)
-  yum: "name={{ item }} state=present"
-  with_items:
-    - '@^GNOME Desktop'
-    - dkms
+  yum:
+    name:
+      - '@^GNOME Desktop'
+      - dkms
+    state: present
   when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
 
 - name: install Gnome desktop (Ubuntu)
-  apt: "name={{ item }} state=present"
-  with_items:
-    - gnome-shell
+  apt: "name=gnome-shell state=present"
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'

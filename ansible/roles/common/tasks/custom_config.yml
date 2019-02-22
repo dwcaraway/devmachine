@@ -11,3 +11,10 @@
 - name: run configuration setup script
   become_user: "{{ username }}"
   shell: "sh setup.sh chdir={{ dot_dir }}"
+- name: set sysctl to support elasticsearch dockers
+  sysctl:
+    name: vm.max_map_count
+    value: "{{ vm_max_map_count }}"
+    sysctl_set: yes
+
+

@@ -6,18 +6,21 @@
     nvm_version: 0.33.11
 
 - name: install minimum necessary tools (centos)
-  yum: "name={{ item }} state=present"
-  with_items:
-    - https://centos7.iuscommunity.org/ius-release.rpm
-    - ruby
+  yum:
+    name:
+      - https://centos7.iuscommunity.org/ius-release.rpm
+      - ruby
+    state: present
   when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
 
 - name: install ruby and javascript
-  apt: "name={{ item }} update_cache=yes state=present"
-  with_items:
-    - ruby-full
-    - nodejs
-    - npm
+  apt:
+    name:
+      - ruby-full
+      - nodejs
+      - npm
+    update_cache: yes
+    state: present
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
 
 - name: check if pyenv installed

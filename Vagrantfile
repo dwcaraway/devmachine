@@ -3,8 +3,8 @@
 
 # Use Ubuntu instead of CentOS
 # VM_BOX = 'bento/ubuntu-16.04'.freeze
-VM_BOX = 'bento/centos-7.4'.freeze
-VM_BOX_VERSION = '201803.24.0'.freeze
+VM_BOX = 'bento/centos-7.6'.freeze
+VM_BOX_VERSION = '201812.27.0'.freeze
 VRAM_MB = '128'
 
 FORWARDED_PORTS = [1337, # strapi
@@ -13,7 +13,9 @@ FORWARDED_PORTS = [1337, # strapi
                    49152, # ember livereload port
                    8081, # metra docker compose port
                    3000, # Django
-                   8000] # Front end / gatsby
+                   8000, # Front end / gatsby / Nucleo
+		   8001,
+9200] # PGWeb
 HOST_IP = '127.0.0.1'
 
 SCRIPT_DIR = File.dirname(__FILE__)
@@ -21,7 +23,7 @@ REPO_DIR = File.expand_path(File.join(SCRIPT_DIR, '..'))
 MAPPED_REPO_DIR = File.join('/home', 'vagrant', 'repos')
 
 # Check required plugins
-REQUIRED_PLUGINS = %w(vagrant-vbguest).freeze
+REQUIRED_PLUGINS = [].freeze
 
 def provisioning?
   ARGV[0].downcase == "provision"

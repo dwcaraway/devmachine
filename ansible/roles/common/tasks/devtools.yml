@@ -2,49 +2,51 @@
 - name: update all installed packages
   package: name=* update_cache=yes state=present
 - name: install common required packages
-  apt: "name={{ item }} state=present"
-  with_items:
-    - software-properties-common
-    - build-essential
-    - unzip
-    - libcurl4-gnutls-dev
-    - libxml2
-    - libxml2-dev
-    - openssl
-    - bzip2
-    - sqlite3
-    - tree
-    - xclip
-    - jq
-    - cairo-devel
-    - graphviz
+  apt:
+    name:
+      - software-properties-common
+      - build-essential
+      - unzip
+      - libcurl4-gnutls-dev
+      - libxml2
+      - libxml2-dev
+      - openssl
+      - bzip2
+      - sqlite3
+      - tree
+      - xclip
+      - jq
+      - cairo-devel
+      - graphviz
+    state: present
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
 
-- name: install development packages required by common RedHat / Centos packages
-  yum: "name={{ item }} state=present"
-  with_items:
-    - '@Development Tools'
-    - epel-release
-  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
-- name: install common required packages
-  yum: "name={{ item }} state=present"
-  with_items:
-    - tree
-    - jq
-    - xclip
-    - unzip
-    - yum-utils
-    - zlib
-    - zlib-devel
-    - bzip2-devel
-    - readline-devel
-    - readline
-    - openssl-devel
-    - openssl
-    - sqlite-devel
-    - epel-release
-    - ack
-    - tmux
-    - lsb-core-noarch
-    - libXScrnSaver
+- name: install prerequisites for RedHat / Centos tools
+  yum:
+    name:
+      - '@Development Tools'
+      - epel-release
+    state: present
+- name: install common required packages for RedHat / Centos packages
+  yum:
+    name:
+      - tree
+      - jq
+      - xclip
+      - unzip
+      - yum-utils
+      - zlib
+      - zlib-devel
+      - bzip2-devel
+      - readline-devel
+      - readline
+      - openssl-devel
+      - openssl
+      - sqlite-devel
+      - epel-release
+      - ack
+      - tmux
+      - lsb-core-noarch
+      - libXScrnSaver
+    state: present
   when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'

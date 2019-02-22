@@ -9,36 +9,39 @@
   when: vim_version is failed or vim_version.stdout|int < 8
   block:
   - name: uninstall existing vim
-    package: "name={{ item }} state=absent"
-    with_items:
-      - vim
-      - vim-tiny
+    package:
+      name:
+        - vim
+        - vim-tiny
+      state: absent
   - name: install vim dependencies (Ubuntu / Debian)
-    apt: "name={{ item }} state=present"
-    with_items:
-      - libncurses5-dev
-      - libgnome2-dev
-      - libgnomeui-dev
-      - libgtk2.0-dev
-      - libatk1.0-dev
-      - libbonoboui2-dev
-      - libcairo2-dev
-      - libx11-dev
-      - libxpm-dev
-      - libxt-dev
-      - python-dev
-      - python3-dev
-      - ruby-dev
-      - lua5.1
-      - libperl-dev
+    apt:
+      name:
+        - libncurses5-dev
+        - libgnome2-dev
+        - libgnomeui-dev
+        - libgtk2.0-dev
+        - libatk1.0-dev
+        - libbonoboui2-dev
+        - libcairo2-dev
+        - libx11-dev
+        - libxpm-dev
+        - libxt-dev
+        - python-dev
+        - python3-dev
+        - ruby-dev
+        - lua5.1
+        - libperl-dev
+      state: present
     when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
   - name: install vim dependencies (CentOS / RHEL)
-    yum: "name={{ item }} state=present"
-    with_items:
-      - ncurses-devel
-      - python36
-      - python36-devel
-      - libX11-devel
+    yum:
+      name:
+        - ncurses-devel
+        - python36
+        - python36-devel
+        - libX11-devel
+      state: present
     when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
   - name: Unpackage vim source code
     unarchive:
