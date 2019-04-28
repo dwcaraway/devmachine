@@ -2,9 +2,10 @@
 - name: installation facts
   set_fact:
     pyenv_root: "{{ home_dir }}/.pyenv"
+    pyenv_script: "{{ home_dir }}/.pyenv/bin/pyenv"
     nvm_root: "{{ home_dir }}/.nvm"
     nvm_script: "{{ home_dir }}/.nvm/nvm.sh"
-    nvm_version: 0.33.11
+    nvm_version: 0.34.0
     python_version: 3.7.2
 
 - name: install minimum necessary tools (centos)
@@ -39,10 +40,11 @@
     get_url:
       url: https://raw.githubusercontent.com/yyuu/pyenv-installer/master/bin/pyenv-installer
       dest: /tmp/install_pyenv.sh
+      mode: "u+x"
   - name: install pyenv using the automatic installer
-    shell: "sh install_pyenv.sh chdir=/tmp"
+    shell: /tmp/install_pyenv.sh
     args:
-      creates: "{{ pyenv_root }}"
+      creates: "{{ pyenv_script }}"
   - name: configure zsh for pyenv
     blockinfile:
       backup: false
@@ -56,15 +58,23 @@
 
 - name: configure pyenv
   become_user: "{{ username }}"
+  environment:
+    SHELL: /bin/zsh
   block:
   - name: install global pyenv version
-    shell: pyenv install -s {{ python_version }}
+    shell: |
+      source "{{ home_dir}}/.zshrc"
+      pyenv install -s {{ python_version }}
 
   - name: configure global pyenv version
-    shell: pyenv global {{ python_version }}
+    shell: |
+      source "{{ home_dir}}/.zshrc"
+      pyenv global {{ python_version }}
 
   - name: install python support tools globally
-    shell: pip install pipenv flake8 autopep8
+    shell: |
+      source "{{ home_dir}}/.zshrc"
+      pip install pipenv flake8 autopep8
 
 - name: check if nvm installed
   command: command -v nvm
@@ -80,11 +90,16 @@
     get_url:
       url: "https://raw.githubusercontent.com/creationix/nvm/v{{nvm_version}}/install.sh"
       dest: /tmp/install_nvm.sh
+      mode: "u+rx"
+  - name: ensure nvm root directory exists
+    file:
+      path: "{{ nvm_root }}"
+      state: directory
+      mode: 0755
   - name: install nvm using the automatic installer
-    shell: "{{ zsh_bin }} install_nvm.sh chdir=/tmp"
+    shell: /tmp/install_nvm.sh
     args:
-      creates: "{{ nvm_root }}"
-
+      creates: "{{ nvm_root }}/nvm.sh"
   - name: configure zsh for nvm
     blockinfile:
       backup: false
@@ -97,23 +112,20 @@
           [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 - name: configure global nodejs tools
-  become: yes
   become_user: "{{ username }}"
+  environment:
+    SHELL: /bin/zsh
   block:
-  - name: load nvm settings for zsh
+  - name: install node
     shell: |
       source "{{ home_dir}}/.zshrc"
       nvm install node
-    args:
-      executable: /bin/zsh
     ignore_errors: yes
-  - name: load nvm settings for zsh
+  - name: make installed node version the default
     shell: |
       source "{{ home_dir}}/.zshrc"
       nvm alias default node
-    args:
-      executable: /bin/zsh
   - name: install nodejs required libraries
-    shell: npm install -g prettier eslint
-    args:
-      executable: /bin/zsh
+    shell: |
+      source "{{ home_dir}}/.zshrc"
+      npm install -g prettier eslint
