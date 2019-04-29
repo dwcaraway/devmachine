@@ -30,9 +30,11 @@
   command: command -v pyenv
   register: pyenv_check
   ignore_errors: True
+  become: true
   become_user: "{{ username }}"
 
 - name: install pyenv
+  become: true
   become_user: "{{ username }}"
   when: pyenv_check is failed
   block:
@@ -57,6 +59,7 @@
           eval "$(pyenv virtualenv-init -)"
 
 - name: configure pyenv
+  become: true
   become_user: "{{ username }}"
   environment:
     SHELL: /bin/zsh
@@ -80,9 +83,11 @@
   command: command -v nvm
   register: nvm_check
   ignore_errors: True
+  become: true
   become_user: "{{ username }}"
 
 - name: install nvm
+  become: true
   become_user: "{{ username }}"
   when: nvm_check is failed
   block:
@@ -112,6 +117,7 @@
           [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 - name: configure global nodejs tools
+  become: true
   become_user: "{{ username }}"
   environment:
     SHELL: /bin/zsh

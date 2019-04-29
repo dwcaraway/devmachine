@@ -11,6 +11,7 @@
     dest: "{{ dot_dir }}"
     state: link
 - name: run configuration setup script
+  become: true
   become_user: "{{ username }}"
   shell: "sh setup.sh chdir={{ dot_dir }}"
 - name: set sysctl to support elasticsearch dockers
@@ -19,11 +20,13 @@
     value: "{{ vm_max_map_count }}"
     sysctl_set: yes
 - name: check if certificates available
+  become: true
   become_user: "{{ username }}"
   stat:
     path: "{{ auth_script }}"
   register: auth_script_file
 - name: install and configure certificates
+  become: true
   become_user: "{{ username }}"
   shell: "{{ auth_script }}"
   when: auth_script_file.stat.exists == True

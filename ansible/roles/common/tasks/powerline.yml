@@ -4,6 +4,7 @@
   register: powerline_fonts
   command: "find {{ powerline_fonts_dir }} -type d"
   ignore_errors: True
+  become: true
   become_user: "{{ username }}"
 - name: install powerline for vim and tmux
   shell: pip install powerline-status

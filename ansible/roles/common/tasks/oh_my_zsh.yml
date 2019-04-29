@@ -5,6 +5,7 @@
   register: omz_check
   command: "find {{ zsh_plugin_dir }}-type d"
   ignore_errors: True
+  become: true
   become_user: "{{ username }}"
 - name: install oh-my-zsh dependencies
   package: "name={{ item }} state=present"
@@ -12,9 +13,10 @@
     - zsh
 - name: install oh-my-zsh
   when: omz_check is failed
+  become: true
+  become_user: "{{ username }}"
   block:
   - name: find user zsh path
-    become_user: "{{ username }}"
     register: zsh_path
     shell: which zsh
   - name: add zsh to list of available shells
@@ -22,20 +24,20 @@
   - name: make zsh the user's default login shell
     shell: "chsh -s {{ zsh_path.stdout }} {{ username }}"
   - name: download zsh extension
-    become_user: "{{ username }}"
     get_url:
       url: "https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh"
       dest: "{{ temp_dir }}/install_oh_my_zsh.sh"
   - name: run the oh-my-zsh installation script
-    become_user: "{{ username}}"
     shell: "{{ zsh_bin }} install_oh_my_zsh.sh chdir={{ temp_dir }}"
 - name: check for oh-my-zsh autosuggestion download
   register: zsh_autosuggestion
   command: "find {{ zsh_autosuggestion_dir }} -type d"
   ignore_errors: True
+  become: true
   become_user: "{{ username }}"
 - name: download zsh-autosuggestion plugin
   when: zsh_autosuggestion is failed
   git: "repo=https://github.com/zsh-users/zsh-autosuggestions.git dest={{ zsh_autosuggestion_dir }} clone=yes update=yes"
+  become: true
   become_user: "{{ username }}"
 

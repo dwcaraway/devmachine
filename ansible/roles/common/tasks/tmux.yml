@@ -2,6 +2,7 @@
 - set_fact: tmux_dir="{{ temp_dir }}/tmux-2.3"
 - name: check for tmux installation
   shell: "tmux -V | cut -d ' ' -f 2 | cut -d '.' -f 1"
+  become: true
   become_user: "{{ username }}"
   register: tmux_version
   ignore_errors: True

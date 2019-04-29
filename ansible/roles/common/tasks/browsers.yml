@@ -1,6 +1,7 @@
 ---
 - name: check for phantomjs
   command: "command -v phantomjs"
+  become: true
   become_user: "{{ username }}"
   register: phantomjs_found
   ignore_errors: True

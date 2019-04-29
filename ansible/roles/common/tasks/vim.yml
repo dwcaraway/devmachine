@@ -2,6 +2,7 @@
 - set_fact: vim_dir="{{ temp_dir }}/vim-master"
 - name: check for vim installation
   shell: "vim --version | head -1 | cut -d ' ' -f 5 | cut -d '.' -f 1"
+  become: true
   become_user: "{{ username }}"
   register: vim_version
   ignore_errors: True
