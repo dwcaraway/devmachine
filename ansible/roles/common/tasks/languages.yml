@@ -122,15 +122,15 @@
   environment:
     SHELL: /bin/zsh
   block:
-  - name: install node
+  - name: install node 10
     shell: |
       source "{{ home_dir}}/.zshrc"
-      nvm install node
+      nvm install 10.1.0
     ignore_errors: yes
   - name: make installed node version the default
     shell: |
       source "{{ home_dir}}/.zshrc"
-      nvm alias default node
+      nvm alias default 10.1.0
   - name: install nodejs required libraries
     shell: |
       source "{{ home_dir}}/.zshrc"
