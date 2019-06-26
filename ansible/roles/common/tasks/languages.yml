@@ -134,4 +134,4 @@
   - name: install nodejs required libraries
     shell: |
       source "{{ home_dir}}/.zshrc"
-      npm install -g prettier eslint
+      npm install -g prettier eslint npm
