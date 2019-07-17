@@ -3,7 +3,7 @@
 - set_fact: zsh_autosuggestion_dir="{{ zsh_plugin_dir }}/zsh-autosuggestions"
 - name: check oh-my-zsh installed for user
   register: omz_check
-  command: "find {{ zsh_plugin_dir }}-type d"
+  command: "find {{ zsh_plugin_dir }} -type d"
   ignore_errors: True
   become: true
   become_user: "{{ username }}"
@@ -13,7 +13,7 @@
     - zsh
 - name: install oh-my-zsh
   when: omz_check is failed
-  become: true
+  become: yes
   become_user: "{{ username }}"
   block:
   - name: find user zsh path
@@ -21,6 +21,14 @@
     shell: which zsh
   - name: add zsh to list of available shells
     lineinfile: "line={{ zsh_path.stdout }} dest=/etc/shells"
+    become: yes
+  - name: allow user to set default login shell
+    pamd:
+      name: chsh
+      type: auth
+      control: 'include'
+      module_path: system-auth 
+      new_control: 'sufficient'
   - name: make zsh the user's default login shell
     shell: "chsh -s {{ zsh_path.stdout }} {{ username }}"
   - name: download zsh extension

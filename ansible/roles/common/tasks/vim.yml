@@ -54,8 +54,8 @@
     shell: >
       ./configure
       --enable-multibyte
-      --enable-pythoninterp=dynamic
-      --with-python-config-dir=/usr/lib64/python2.7/config/
+      --enable-python3interp=dynamic
+      --with-python3-config-dir=/usr/lib64/python3.6/config-3.6m-x86_64-linux-gnu/
       --with-features=huge
       --enable-fontset
       --enable-largefile

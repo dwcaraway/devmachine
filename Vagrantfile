@@ -4,13 +4,11 @@
 # Use Ubuntu instead of CentOS
 # VM_BOX = 'bento/ubuntu-16.04'.freeze
 VM_BOX = 'bento/centos-7.6'.freeze
-VM_BOX_VERSION = '201812.27.0'.freeze
+VM_BOX_VERSION = '201906.17.0'.freeze
 VRAM_MB = '128'
 
 FORWARDED_PORTS = [1337, # strapi
                    8888, # jupyter dev server port
-                   4200, # default ember port
-                   49152, # ember livereload port
                    8081, # metra docker compose port
                    3000, # Django
                    8000, # Front end / gatsby / Nucleo
@@ -102,7 +100,7 @@ Vagrant.configure('2') do |config|
 
   # Provision with ansible_local
   config.vm.provision('ansible_local') do |ansible_local|
-    ansible_local.install_mode = :pip
+    ansible_local.install_mode = :default
     ansible_local.playbook = 'ansible/playbook.yml'
     ansible_local.inventory_path = 'ansible/hosts'
     ansible_local.galaxy_role_file = 'ansible/required_roles.yml'

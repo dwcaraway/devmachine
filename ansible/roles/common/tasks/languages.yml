@@ -13,6 +13,7 @@
     name:
       - https://centos7.iuscommunity.org/ius-release.rpm
       - ruby
+      - libffi-devel
     state: present
   when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
 

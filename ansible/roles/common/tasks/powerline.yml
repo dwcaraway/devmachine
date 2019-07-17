@@ -6,8 +6,15 @@
   ignore_errors: True
   become: true
   become_user: "{{ username }}"
+- name: install minimum necessary tools (centos)
+  yum:
+    name:
+      - python36
+      - python36-pip
+    state: present
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
 - name: install powerline for vim and tmux
-  shell: pip install powerline-status
+  shell: pip3 install powerline-status
 - name: install powerline fonts
   when: powerline_fonts is failed
   block:
