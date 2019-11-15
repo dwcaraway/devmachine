@@ -93,6 +93,9 @@ Vagrant.configure('2') do |config|
 
     # Allow copy and paste experience for VirtualBox VMS
     vb.customize ['modifyvm', :id, '--clipboard', 'bidirectional']
+
+    # Sync the clock to prevent skew
+    #vb.customize [ “guestproperty”, “set”, :id, “/VirtualBox/GuestAdd/VBoxService/--timesync-set-threshold”, 10000 ]
   end
 
   # Ansible galaxy roles requires Git, preload prior to running the playbook
