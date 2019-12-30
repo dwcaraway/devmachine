@@ -11,4 +11,5 @@
   roles:
     - geerlingguy.git
     - geerlingguy.docker
+    - robertdebock.terraform
     - common

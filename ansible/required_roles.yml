@@ -5,3 +5,4 @@
 # - src: angstwad.docker_ubuntu
 - src: geerlingguy.docker
 - src: geerlingguy.git
+- src: robertdebock.terraform

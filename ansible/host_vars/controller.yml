@@ -21,3 +21,6 @@ docker_install_compose: true
 docker_compose_version: "1.23.2"
 # required for elasticsearch docker instance
 vm_max_map_count: 262144
+
+#terraform settings
+terraform_version: 0.12.18
