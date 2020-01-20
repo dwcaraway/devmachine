@@ -10,6 +10,7 @@
 - include: browsers.yml
 - include: guestadditions.yml
 - include: latex.yml
+- include: time.yml
 
 - name: Add vagrant user to docker group
   user:

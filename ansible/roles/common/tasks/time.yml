@@ -1,0 +1,15 @@
+---
+- name: install ntp service
+  package: "name={{ item }} state=present"
+  with_items:
+    - ntp
+- name: configure ntp to use Amazon timeservers
+  template:
+    src: templates/ntp.j2
+    dest: /etc/ntp.conf
+    owner: root
+    group: root
+- name: Restart ntp daemon, in all cases
+  service:
+    name: ntpd
+    state: restarted
